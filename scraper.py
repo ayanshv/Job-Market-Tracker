@@ -7,5 +7,25 @@ def extract():
     jobs = r.json()
     return jobs
 
+def transform(jobs):
+    jobs = jobs[1:]
+    results = []
+    for job in jobs:
+        max_sal = job.get('salary_max', 0)
+        min_sal = job.get('salary_min', 0)
+        results.append({
+            'Title' : job.get('position', 'N/A'),
+            'Company' : job.get('company', 'N/A'),
+            'Minimum Salary' : 'N/A' if min_sal == 0 else min_sal,
+            'Maximum Salary' : 'N/A' if max_sal == 0 else max_sal,
+            'Skills' : job.get('tags', 'N/A'),
+            'Responsibilities' : job.get('description', 'N/A'),
+            'Date' : job.get('date', 'N/A'),
+            'URL' : job.get('url', 'N/A'),
+            'Location' : job.get('location', 'N/A'),
+        })
+    return results
+
 jobs = extract()
-print(f"Total jobs found: {len(jobs)}")
+data = transform(jobs)
+print(data[0])
