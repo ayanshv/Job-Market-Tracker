@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 def extract():
     url = "https://remoteok.com/api"
@@ -26,6 +27,11 @@ def transform(jobs):
         })
     return results
 
+def save_to_csv(data, filename):
+    df = pd.DataFrame(data)
+    df.to_csv(filename, index=False)
+    print(f"Saved {len(df)} jobs to {filename}")
+
 jobs = extract()
 data = transform(jobs)
-print(data[0])
+save_to_csv(data, 'jobs.csv')
