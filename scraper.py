@@ -32,6 +32,22 @@ def save_to_csv(data, filename):
     df.to_csv(filename, index=False)
     print(f"Saved {len(df)} jobs to {filename}")
 
+def filter_by_skill(data, skills):
+    jobs = []
+    for job in data:
+        for tag in job['Skills']:
+            if skills.lower() == tag.lower():
+                jobs.append(job)
+                break
+    return jobs
+
 jobs = extract()
 data = transform(jobs)
 save_to_csv(data, 'jobs.csv')
+skill = input("Enter desired position: ")
+filtered = filter_by_skill(data, skill)
+if len(filtered) == 0:
+    print("No jobs currently available for this position. Please try again later.")
+else:
+    print(f"Found {len(filtered)} job(s) for '{skill}'")
+    save_to_csv(filtered, f'{skill}_jobs.csv')
