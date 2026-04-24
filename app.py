@@ -6,7 +6,7 @@ from analysis import count_skills
 
 st.set_page_config(
     page_title="Job Market Tracker",
-    page_icon="🎯",
+    page_icon="favicon.png",
     layout="wide"
 )
 
