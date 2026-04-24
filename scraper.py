@@ -1,6 +1,26 @@
+from datetime import datetime
 import requests
+import re
+import html
 import pandas as pd
 from config import API_URL, USER_AGENT, CSV_FILENAME
+
+def strip_html(text):
+    if text == 'N/A':
+        return 'N/A'
+    text = re.sub('<.*?>', '', text)
+    text = html.unescape(text)
+    text = text.encode('utf-8', errors='ignore').decode('utf-8')
+    text = re.sub(r'â\w*', '', text)
+    text = re.sub(r'\*\*.*?\*\*', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+def format_date(date_str):
+    try:
+        dt = datetime.fromisoformat(date_str)
+        return dt.strftime("%B %d, %Y")
+    except:
+        return 'N/A'
 
 def extract():
     url = API_URL
@@ -21,8 +41,8 @@ def transform(jobs):
             'Minimum Salary' : 'N/A' if min_sal == 0 else min_sal,
             'Maximum Salary' : 'N/A' if max_sal == 0 else max_sal,
             'Skills' : job.get('tags', 'N/A'),
-            'Responsibilities' : job.get('description', 'N/A'),
-            'Date' : job.get('date', 'N/A'),
+            'Responsibilities': strip_html(job.get('description', 'N/A')),
+            'Date': format_date(job.get('date', 'N/A')),
             'URL' : job.get('url', 'N/A'),
             'Location' : job.get('location', 'N/A'),
         })

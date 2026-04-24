@@ -4,6 +4,12 @@ from scraper import extract, transform, filter_by_skill
 import matplotlib.pyplot as plt
 from analysis import count_skills
 
+st.set_page_config(
+    page_title="Job Market Tracker",
+    page_icon="🎯",
+    layout="wide"
+)
+
 st.title(f"Track the Job Market. Find your Edge.")
 st.write(
     "A data-driven job tracking application that collects real-time listings from public APIs, processes and filters job data, and presents actionable insights to help users navigate the job market more effectively."
@@ -23,7 +29,7 @@ if skill:
     filtered = filter_by_skill(data, skill)
     df = pd.DataFrame(filtered)
 
-st.dataframe(df)
+st.dataframe(df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Date', 'Location', 'URL']])
 
 
 st.subheader("Top 20 In-Demand Skills")
