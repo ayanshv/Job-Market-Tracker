@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from config import CHART_FILENAME, TOP_SKILLS_COUNT, CHART_WIDTH, CHART_HEIGHT
 
 def count_skills(data):
     skill_counts = {}
@@ -12,14 +13,14 @@ def count_skills(data):
 
 def generate_chart(skill_counts):
     sorted_skills = sorted(skill_counts.items(), key = lambda x: x[1], reverse = True)
-    top_20 = sorted_skills [:20]
+    top_20 = sorted_skills [:TOP_SKILLS_COUNT]
     skills = [item[0] for item in top_20]
     counts = [item[1] for item in top_20]
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(CHART_WIDTH, CHART_HEIGHT))
     plt.bar(skills, counts)
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.savefig('skills_chart.png')
+    plt.savefig(CHART_FILENAME)
     plt.show()
     print("Chart saved as skills_chart.png")
 

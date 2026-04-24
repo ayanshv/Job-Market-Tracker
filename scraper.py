@@ -1,10 +1,10 @@
 import requests
 import pandas as pd
-
+from config import API_URL, USER_AGENT, CSV_FILENAME
 
 def extract():
-    url = "https://remoteok.com/api"
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    url = API_URL
+    headers = {'User-Agent': USER_AGENT}
     r = requests.get(url, headers=headers)
     jobs = r.json()
     return jobs
