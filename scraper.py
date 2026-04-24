@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 
+
 def extract():
     url = "https://remoteok.com/api"
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -52,3 +53,4 @@ if __name__ == "__main__":
     else:
         print(f"Found {len(filtered)} job(s) for '{skill}'")
         save_to_csv(filtered, f'{skill}_jobs.csv')
+
