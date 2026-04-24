@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from scraper import extract, transform, filter_by_skill
+from scraper import extract, transform, filter_by_skill, match_score
 import matplotlib.pyplot as plt
 from analysis import count_skills
 
@@ -31,7 +31,20 @@ if skill:
 
 st.dataframe(df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Date', 'Location', 'URL']])
 
+st. subheader("Job Match Score")
 
+user_skills_input = st.text_input("Enter your skills (comma separated)", "python, sql, excel")
+
+if user_skills_input:
+    user_skills = [s.strip() for s in user_skills_input.split(',')]
+    scored = []
+    for job in data:
+        score = match_score(job, user_skills)
+        scored.append({**job, 'Match Score %': score})
+
+    scored_df = pd.DataFrame(scored)
+    scored_df = scored_df.sort_values('Match Score %', ascending=False)
+    st.dataframe(scored_df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Match Score %']].head(10))
 st.subheader("Top 20 In-Demand Skills")
 counts = count_skills(data)
 

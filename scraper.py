@@ -38,8 +38,8 @@ def transform(jobs):
         results.append({
             'Title' : job.get('position', 'N/A'),
             'Company' : job.get('company', 'N/A'),
-            'Minimum Salary' : 'N/A' if min_sal == 0 else min_sal,
-            'Maximum Salary' : 'N/A' if max_sal == 0 else max_sal,
+            'Minimum Salary' : 'Please check the URL for salary information' if min_sal == 0 else min_sal,
+            'Maximum Salary' : 'Please check the URL for salary information' if max_sal == 0 else max_sal,
             'Skills' : job.get('tags', 'N/A'),
             'Responsibilities': strip_html(job.get('description', 'N/A')),
             'Date': format_date(job.get('date', 'N/A')),
@@ -61,6 +61,18 @@ def filter_by_skill(data, skills):
                 jobs.append(job)
                 break
     return jobs
+
+def match_score(job, user_skills):
+    job_skills = job.get('Skills', [])
+    if not job_skills or job_skills == 'N/A':
+        return 0
+    matches = sum(
+        1 for skill in job_skills
+        if any(skill.lower() == user_skill.lower()
+               for user_skill in user_skills)
+    )
+    return int((matches/ len(job_skills)) * 100)
+
 
 if __name__ == "__main__":
     jobs = extract()
