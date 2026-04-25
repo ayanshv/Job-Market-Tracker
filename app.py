@@ -10,6 +10,8 @@ st.set_page_config(
     layout="wide"
 )
 
+st.logo("favicon.png", size = "large")
+
 st.title(f"Track the Job Market. Find your Edge.")
 st.write(
     "A data-driven job tracking application that collects real-time listings from public APIs, processes and filters job data, and presents actionable insights to help users navigate the job market more effectively."
@@ -19,7 +21,7 @@ with st.spinner("Fetching jobs..."):
     jobs = extract()
     data = transform(jobs)
 
-st.metric("Total jobs found: ", len(data))
+st.markdown(f"### **Total Jobs Found: {len(data)}**")
 
 df = pd.DataFrame(data)
 
@@ -27,13 +29,21 @@ skill = st.text_input("Enter desired position: ")
 
 if skill:
     filtered = filter_by_skill(data, skill)
-    df = pd.DataFrame(filtered)
+    if len(filtered) == 0:
+        st.warning("No jobs found for that skill. Try another search.")
+    else:
+        df = pd.DataFrame(filtered)
 
-st.dataframe(df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Date', 'Location', 'URL']])
+st.dataframe(
+    df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Date', 'Location', 'URL']],
+    column_config={
+        "URL": st.column_config.LinkColumn("URL")
+    }
+)
 
 st. subheader("Job Match Score")
 
-user_skills_input = st.text_input("Enter your skills (comma separated)", "python, sql, excel")
+user_skills_input = st.text_input("What are you proficient in? Examples: Python, SQL, 3D (comma separated)", "")
 
 if user_skills_input:
     user_skills = [s.strip() for s in user_skills_input.split(',')]
