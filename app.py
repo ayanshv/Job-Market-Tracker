@@ -23,9 +23,19 @@ with st.spinner("Fetching jobs..."):
 
 st.markdown(f"### **Total Jobs Found: {len(data)}**")
 
+with st.sidebar:
+    st.header("Search")
+    skill = st.text_input("Enter desired position: ")
+
+    st.divider()
+
+    st.header("Job Match Score")
+
+    user_skills_input = st.text_input("What are you proficient in? Examples: Python, SQL, 3D (comma separated)", "")
+
 df = pd.DataFrame(data)
 
-skill = st.text_input("Enter desired position: ")
+
 
 if skill:
     filtered = filter_by_skill(data, skill)
@@ -41,11 +51,8 @@ st.dataframe(
     }
 )
 
-st. subheader("Job Match Score")
-
-user_skills_input = st.text_input("What are you proficient in? Examples: Python, SQL, 3D (comma separated)", "")
-
 if user_skills_input:
+    st.subheader("Job Match Score")
     user_skills = [s.strip() for s in user_skills_input.split(',')]
     scored = []
     for job in data:
