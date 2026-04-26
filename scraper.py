@@ -43,8 +43,8 @@ def transform(jobs):
         results.append({
             'Title' : job.get('position', 'N/A'),
             'Company' : job.get('company', 'N/A') or 'Please check the URL for company information',
-            'Minimum Salary' : 'Please check the URL for salary information' if min_sal == 0 else min_sal,
-            'Maximum Salary' : 'Please check the URL for salary information' if max_sal == 0 else max_sal,
+            'Minimum Salary' : 'Please check the URL for salary information' if min_sal == 0 else str(min_sal),
+            'Maximum Salary' : 'Please check the URL for salary information' if max_sal == 0 else str(max_sal),
             'Skills' : job.get('tags', 'N/A'),
             'Responsibilities': strip_html(job.get('description', 'N/A')),
             'Date': format_date(job.get('date', 'N/A')),

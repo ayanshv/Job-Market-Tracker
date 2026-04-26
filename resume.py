@@ -1,11 +1,11 @@
 import pdfplumber
-import google.generativeai as genai
+from google import genai
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def extract_pdf_text(pdf_file):
     reader = pdfplumber.open(pdf_file)
@@ -19,8 +19,6 @@ def extract_pdf_text(pdf_file):
     return text.strip()
 
 def analyze_resume(resume_text, top_skills):
-    model = genai.GenerativeModel("gemini-2.5-flash")
-
     prompt = f"""
     You are a career advisor analyzing a resume against current job market data.
 
@@ -40,6 +38,8 @@ def analyze_resume(resume_text, top_skills):
     
     """
 
-    response = model.generate_content(prompt)
-
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
     return response.text

@@ -24,11 +24,13 @@ with st.spinner("Fetching jobs..."):
 
 st.markdown(f"### **Total Jobs Found: {len(data)}**")
 
+st.divider()
+
 counts = count_skills(data)
 
 sorted_skills = sorted(counts.items(), key = lambda x: x[1], reverse = True)
 
-st.subheader("PDF Analyzer")
+st.subheader("Resume Analyzer")
 input_method = st.radio("How would you like to submit your resume?",
                          ["Upload PDF", "Paste Text (CNTRL + ENTER to submit)"])
 
@@ -47,6 +49,8 @@ if resume_text:
         feedback = analyze_resume(resume_text, top_skills)
         st.markdown(feedback)
 
+st.divider()
+
 with st.sidebar:
     st.header("Search")
     skill = st.text_input("Enter desired position: ")
@@ -56,6 +60,14 @@ with st.sidebar:
     st.header("Job Match Score")
 
     user_skills_input = st.text_input("What are you proficient in? Examples: Python, SQL, 3D (comma separated)", "")
+
+    st.divider()
+
+    st.markdown("<br>" * 27, unsafe_allow_html=True)
+
+    st.caption("Remote jobs all over the world")
+    st.caption("Live data sourced from RemoteOK API")
+    st.caption("Resume Analyzer powered by Gemini AI")
 
 df = pd.DataFrame(data)
 
@@ -95,6 +107,16 @@ fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(skills, number)
 plt.xticks(rotation=45)
 plt.tight_layout()
+
+fig.patch.set_facecolor('#0e1117')
+ax.set_facecolor('#0e1117')
+ax.tick_params(colors='white')
+ax.spines['bottom'].set_color('white')
+ax.spines['left'].set_color('white')
+ax.spines['top'].set_color('#0e1117')
+ax.spines['right'].set_color('#0e1117')
+plt.xticks(color='white')
+plt.yticks(color='white')
 
 st.pyplot(fig)
 
