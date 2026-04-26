@@ -3,6 +3,7 @@ import pandas as pd
 from scraper import extract, transform, filter_by_skill, match_score
 import matplotlib.pyplot as plt
 from analysis import count_skills
+from resume import extract_pdf_text, analyze_resume
 
 st.set_page_config(
     page_title="Job Market Tracker",
@@ -22,6 +23,29 @@ with st.spinner("Fetching jobs..."):
     data = transform(jobs)
 
 st.markdown(f"### **Total Jobs Found: {len(data)}**")
+
+counts = count_skills(data)
+
+sorted_skills = sorted(counts.items(), key = lambda x: x[1], reverse = True)
+
+st.subheader("PDF Analyzer")
+input_method = st.radio("How would you like to submit your resume?",
+                         ["Upload PDF", "Paste Text (CNTRL + ENTER to submit)"])
+
+resume_text = ""
+
+if input_method == "Upload PDF":
+    upload_file = st.file_uploader("Upload your resume", type="pdf")
+    if upload_file:
+        resume_text = extract_pdf_text(upload_file)
+else:
+    resume_text = st.text_area("Paste your resume text here", height=300)
+
+if resume_text:
+    with st.spinner("Analyzing your resume..."):
+        top_skills = [item[0] for item in sorted_skills[:20]]
+        feedback = analyze_resume(resume_text, top_skills)
+        st.markdown(feedback)
 
 with st.sidebar:
     st.header("Search")
@@ -63,9 +87,7 @@ if user_skills_input:
     scored_df = scored_df.sort_values('Match Score %', ascending=False)
     st.dataframe(scored_df[['Title', 'Company', 'Minimum Salary', 'Maximum Salary', 'Skills', 'Match Score %']].head(10))
 st.subheader("Top 20 In-Demand Skills")
-counts = count_skills(data)
 
-sorted_skills = sorted(counts.items(), key = lambda x: x[1], reverse = True)
 top_20 = sorted_skills[:20]
 skills = [item[0] for item in top_20]
 number = [item[1] for item in top_20]
